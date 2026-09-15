@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BharatOS-Shield: Sovereign OS Prototype</title>
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="/static/css/desktop.css">
+</head>
+<body>
+
+    <!-- 1. Secure Boot loader overlay -->
+    <div id="boot-overlay" class="boot-overlay">
+        <div class="boot-container">
+            <div class="national-crest">
+                <i class="fa-solid fa-shield-halved chakra-glow"></i>
+            </div>
+            <h1 class="boot-title">BHARAT<span class="orange-text">OS</span>-SHIELD</h1>
+            <p class="boot-subtitle">Sovereign Security Operating System v1.0</p>
+            
+            <div class="boot-loader-box">
+                <div id="boot-progress-bar" class="boot-progress-bar"></div>
+            </div>
+            
+            <div id="boot-log" class="boot-log">
+                <!-- Appended dynamically by JS -->
+            </div>
+            
+            <button id="boot-enter-btn" class="boot-enter-btn" disabled>
+                <i class="fa-solid fa-unlock-keyhole"></i> Enter Secure Shell
+            </button>
+        </div>
+    </div>
+
+    <!-- 2. Main Desktop UI -->
+    <div id="desktop" class="desktop-environment">
+        
+        <!-- Desktop Grid Shortcuts -->
+        <div class="desktop-shortcuts">
+            <div class="shortcut" onclick="openWindow('window-terminal')">
+                <div class="shortcut-icon icon-cyan">
+                    <i class="fa-solid fa-terminal"></i>
+                </div>
+                <div class="shortcut-name">Sovereign Shell</div>
+            </div>
+            
+            <div class="shortcut" onclick="openWindow('window-ai-shield')">
+                <div class="shortcut-icon icon-orange">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div class="shortcut-name">AI Threat Shield</div>
+            </div>
+            
+            <div class="shortcut" onclick="openWindow('window-vault')">
+                <div class="shortcut-icon icon-emerald">
+                    <i class="fa-solid fa-vault"></i>
+                </div>
+                <div class="shortcut-name">Secure Vault</div>
+            </div>
+            
+            <div class="shortcut" onclick="openWindow('window-simulator')">
+                <div class="shortcut-icon icon-red">
+                    <i class="fa-solid fa-shield-cat"></i>
+                </div>
+                <div class="shortcut-name">Cyber Arena</div>
+            </div>
+        </div>
+
+        <!-- Draggable Windows -->
+
+        <!-- A. Terminal Window -->
+        <div id="window-terminal" class="window-shell" style="top: 10%; left: 10%; width: 650px; height: 420px; display: none;">
+            <div class="window-header" onmousedown="dragStart(event, 'window-terminal')">
+                <div class="window-title"><i class="fa-solid fa-terminal icon-space"></i> bharat-shell@localnode</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize-btn" onclick="minimizeWindow('window-terminal')"><i class="fa-solid fa-window-minimize"></i></button>
+                    <button class="win-btn close-btn" onclick="closeWindow('window-terminal')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="window-body terminal-body">
+                <div class="terminal-welcome">
+                    Welcome to BharatOS Terminal (Sovereign Shell v1.0).<br>
+                    Run 'help' to inspect available system calls and security options.<br><br>
+                </div>
+                <div id="terminal-history" class="terminal-history"></div>
+                <div class="terminal-input-row">
+                    <span class="terminal-prompt">bharat-shell:~# </span>
+                    <input type="text" id="terminal-input" class="terminal-input" autofocus autocomplete="off" onkeydown="handleTerminalKey(event)">
+                </div>
+            </div>
+        </div>
+
+        <!-- B. AI-Shield Dashboard Window -->
+        <div id="window-ai-shield" class="window-shell" style="top: 15%; left: 25%; width: 720px; height: 480px; display: none;">
+            <div class="window-header" onmousedown="dragStart(event, 'window-ai-shield')">
+                <div class="window-title"><i class="fa-solid fa-brain icon-space"></i> AI Threat Shield Operations Center</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize-btn" onclick="minimizeWindow('window-ai-shield')"><i class="fa-solid fa-window-minimize"></i></button>
+                    <button class="win-btn close-btn" onclick="closeWindow('window-ai-shield')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="window-body dashboard-body">
+                <!-- Status Row -->
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="card-label">AI Threat Assessment</div>
+                        <div id="threat-classification" class="card-value green-text">Benign</div>
+                        <div class="card-desc">Zero-Trust Active Monitoring</div>
+                    </div>
+                    
+                    <div class="status-card">
+                        <div class="card-label">Anomalous Score Index</div>
+                        <div class="gauge-container">
+                            <span id="threat-score-label" class="gauge-value">0%</span>
+                            <div class="gauge-bar-outer">
+                                <div id="threat-score-bar" class="gauge-bar-inner" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-card">
+                        <div class="card-label">Firewall Filter Status</div>
+                        <div id="firewall-status" class="card-value green-text">CLOSED PORT SHIELD</div>
+                        <div class="card-desc">No external leaks detected</div>
+                    </div>
+                </div>
+
+                <!-- Charts and System Stats Section -->
+                <div class="dashboard-details">
+                    <div class="stats-panel">
+                        <h4><i class="fa-solid fa-chart-line"></i> Local Heartbeat Oscilloscope</h4>
+                        <!-- Real-time Canvas Graph -->
+                        <canvas id="heartbeat-canvas" width="360" height="120" class="graph-canvas"></canvas>
+                        <div class="sys-resources">
+                            <div class="resource-bar">
+                                <span>CPU Kernel Load: </span><span id="cpu-percent">12%</span>
+                                <div class="res-outer"><div id="cpu-bar" class="res-inner" style="width: 12%;"></div></div>
+                            </div>
+                            <div class="resource-bar">
+                                <span>Cryptographic Memory: </span><span id="ram-percent">34%</span>
+                                <div class="res-outer"><div id="ram-bar" class="res-inner" style="width: 34%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="logs-panel">
+                        <h4><i class="fa-solid fa-receipt"></i> Active Security Logs (AI-Audit)</h4>
+                        <div id="logs-container" class="logs-container">
+                            <!-- Injected dynamically by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- C. Secure Vault Explorer Window -->
+        <div id="window-vault" class="window-shell" style="top: 20%; left: 35%; width: 550px; height: 350px; display: none;">
+            <div class="window-header" onmousedown="dragStart(event, 'window-vault')">
+                <div class="window-title"><i class="fa-solid fa-vault icon-space"></i> Secure Vault Explorer (NIC-Vault)</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize-btn" onclick="minimizeWindow('window-vault')"><i class="fa-solid fa-window-minimize"></i></button>
+                    <button class="win-btn close-btn" onclick="closeWindow('window-vault')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="window-body vault-body">
+                <div class="vault-header-bar">
+                    <span>Path: <b>root://secure_vault/</b></span>
+                    <span>Sovereign Storage: Local Host (Secure)</span>
+                </div>
+                <div id="vault-files-grid" class="vault-files-grid">
+                    <!-- File grids rendered dynamically by JS -->
+                </div>
+                <div id="vault-viewer" class="vault-viewer-pane" style="display: none;">
+                    <div class="viewer-header">
+                        <span id="viewer-filename">File Viewer</span>
+                        <button onclick="closeVaultViewer()"><i class="fa-solid fa-chevron-left"></i> Back</button>
+                    </div>
+                    <pre id="viewer-content"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- D. Cyber Arena (Attack Simulator) Window -->
+        <div id="window-simulator" class="window-shell" style="top: 25%; left: 15%; width: 520px; height: 380px; display: none;">
+            <div class="window-header" onmousedown="dragStart(event, 'window-simulator')">
+                <div class="window-title"><i class="fa-solid fa-shield-cat icon-space"></i> Cyber Arena: Defensive Threat Simulator</div>
+                <div class="window-controls">
+                    <button class="win-btn minimize-btn" onclick="minimizeWindow('window-simulator')"><i class="fa-solid fa-window-minimize"></i></button>
+                    <button class="win-btn close-btn" onclick="closeWindow('window-simulator')"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+            </div>
+            <div class="window-body simulator-body">
+                <p class="sim-intro">Select and launch a cyber exploit threat vector to test the real-time detection, threat-scoring, and self-healing algorithms of the BharatOS AI-Shield.</p>
+                
+                <div class="sim-card">
+                    <div class="sim-details">
+                        <h5>Threat Vector: Denial of Service (DoS) Flood</h5>
+                        <p>Fires a rapid succession of network queries from mock foreign proxies. Test dynamic rate-limit containment and automated IP blacklisting.</p>
+                    </div>
+                    <button class="sim-btn btn-danger" onclick="triggerSimulation('ddos')">Launch DDoS</button>
+                </div>
+                
+                <div class="sim-card">
+                    <div class="sim-details">
+                        <h5>Threat Vector: Local Ransomware Infection</h5>
+                        <p>Simulates malware modifying all files in the secure vault. Test bulk behavioral encryption detection and automatic self-healing restoration.</p>
+                    </div>
+                    <button class="sim-btn btn-danger" onclick="triggerSimulation('ransomware')">Launch Ransomware</button>
+                </div>
+                
+                <div class="sim-card">
+                    <div class="sim-details">
+                        <h5>Threat Recovery: Clear Tables & Reset</h5>
+                        <p>Flushes blacklist registries, clears active alert statuses, restores files, and returns system back to clean operational state.</p>
+                    </div>
+                    <button class="sim-btn btn-secondary" onclick="triggerSimulation('reset')">Clear/Reset System</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quarantine Overlay Warning -->
+        <div id="quarantine-overlay" class="quarantine-overlay" style="display: none;">
+            <div class="quarantine-content">
+                <i class="fa-solid fa-triangle-exclamation emergency-siren"></i>
+                <h2>EMERGENCY SECURITY QUARANTINE ACTIVE</h2>
+                <p>AI-Shield Anomaly Engine has detected an active threat payload breach.</p>
+                <div id="quarantine-reason" class="quarantine-reason">Threat Vector classification: DDoS Attack</div>
+                <p>All network transactions and terminal shells are quarantined to preserve integrity.</p>
+                <div class="countdown-box">
+                    <span>AUTO-DECRYPTION & SECURITY RELEASE IN: </span>
+                    <span id="quarantine-timer" class="countdown-timer">20</span> Seconds
+                </div>
+            </div>
+        </div>
+
+        <!-- Taskbar / Navigation bar -->
+        <div class="taskbar">
+            <!-- Start button -->
+            <div class="start-btn" onclick="toggleStartMenu()">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/Ashoka_Chakra.svg" class="chakra-icon" alt="BharatOS Crest">
+                <span>BharatOS</span>
+            </div>
+            
+            <!-- Open windows icons -->
+            <div class="taskbar-links">
+                <div class="taskbar-item" onclick="toggleWindow('window-terminal')"><i class="fa-solid fa-terminal"></i></div>
+                <div class="taskbar-item" onclick="toggleWindow('window-ai-shield')"><i class="fa-solid fa-brain"></i></div>
+                <div class="taskbar-item" onclick="toggleWindow('window-vault')"><i class="fa-solid fa-vault"></i></div>
+                <div class="taskbar-item" onclick="toggleWindow('window-simulator')"><i class="fa-solid fa-shield-cat"></i></div>
+            </div>
+
+            <!-- Start Menu Overlay -->
+            <div id="start-menu" class="start-menu-panel" style="display: none;">
+                <div class="start-menu-header">
+                    <div class="user-avatar"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="user-info">
+                        <h3>Officer Shell</h3>
+                        <p>Govt. Admin Node</p>
+                    </div>
+                </div>
+                <div class="start-menu-links">
+                    <div class="menu-item" onclick="openWindow('window-terminal'); toggleStartMenu()"><i class="fa-solid fa-terminal icon-space"></i> Terminal Shell</div>
+                    <div class="menu-item" onclick="openWindow('window-ai-shield'); toggleStartMenu()"><i class="fa-solid fa-brain icon-space"></i> AI Threat Center</div>
+                    <div class="menu-item" onclick="openWindow('window-vault'); toggleStartMenu()"><i class="fa-solid fa-vault icon-space"></i> Sovereign Vault</div>
+                    <div class="menu-item" onclick="openWindow('window-simulator'); toggleStartMenu()"><i class="fa-solid fa-shield-cat icon-space"></i> Cyber Arena</div>
+                    <hr>
+                    <div class="menu-item shutdown" onclick="location.reload()"><i class="fa-solid fa-power-off icon-space"></i> Restart System</div>
+                </div>
+            </div>
+
+            <!-- Clock and info widget -->
+            <div class="taskbar-info">
+                <div class="national-badge"><i class="fa-solid fa-certificate gold-text"></i> Sovereign Node</div>
+                <div class="taskbar-divider"></div>
+                <div id="taskbar-time" class="taskbar-time">12:00:00 PM</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Core Script -->
+    <script src="/static/js/desktop.js"></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+[
+    {
+        "id": "bedroom_light",
+        "name": "Bedroom Light",
+        "type": "light",
+        "state": "OFF",
+        "value": "100%"
+    },
+    {
+        "id": "study_lamp",
+        "name": "Study Lamp",
+        "type": "light",
+        "state": "OFF",
+        "value": "70%"
+    },
+    {
+        "id": "living_ac",
+        "name": "Living Room AC",
+        "type": "thermostat",
+        "state": "OFF",
+        "value": "22\u00b0C"
+    },
+    {
+        "id": "smart_plug",
+        "name": "Smart Power Outlet",
+        "type": "switch",
+        "state": "OFF",
+        "value": "0W"
+    }
+]

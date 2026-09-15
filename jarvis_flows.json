@@ -1,0 +1,32 @@
+{
+    "AutoMacro_1": {
+        "nodes": [
+            {
+                "id": "node_1781862696085_63",
+                "type": "trigger",
+                "action": "timer",
+                "x": 7.468168415084989,
+                "y": 2.3616479332517173,
+                "width": 130,
+                "height": 48,
+                "params": {
+                    "interval": 10
+                }
+            },
+            {
+                "id": "node_1781862702635_1",
+                "type": "action",
+                "action": "iot_control",
+                "x": 5.327628407280827,
+                "y": 55.23873749780739,
+                "width": 130,
+                "height": 48,
+                "params": {
+                    "device_id": "bedroom_light",
+                    "action": "ON"
+                }
+            }
+        ],
+        "links": []
+    }
+}

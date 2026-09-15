@@ -1,0 +1,11 @@
+with open('app.py', 'r', encoding='utf-8') as f:
+    text = f.read()
+
+import re
+matches = [m.start() for m in re.finditer(r'email|imap|smtp', text, re.IGNORECASE)]
+print(f"Total matches in app.py: {len(matches)}")
+for idx in matches[:20]:
+    start = max(0, idx - 100)
+    end = min(len(text), idx + 250)
+    print(text[start:end].replace('\n', ' '))
+    print("-" * 50)
